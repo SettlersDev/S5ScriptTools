@@ -75,17 +75,14 @@ function InitItemsToFind()
     end
   end
   ------------------------------------------------------------------------
-  AddItemToFind = function(_item, _amount, _pos, _type, _entity, _lockLevel, _callback)
+  AddItemToFind = function(_item, _amount, _posEntity, _type, _entity, _lockLevel, _callback)
     newItemToFind = {}
     assert(type(_item) == "table", "ItemToFind: item is not defined correctly")
     newItemToFind.Item 		= _item
     assert(type(_amount) == "number", "ItemToFind: amount has to be a number")
     newItemToFind.Amount 	= _amount
-    if type(_pos) == "table" then
-      newItemToFind.Position 		= _pos
-    else 
-      newItemToFind.Position 		= GetPosition(_pos)
-    end
+    local x, y, z = Logic.EntityGetPos(GetEntityId(_posEntity))
+    newItemToFind.Position = { X = x, Y = y, Z = z}
     if _entity then
       newItemToFind.ItemEntity = CreateEntity(1, _entity, newItemToFind.Position)
     end
@@ -97,7 +94,7 @@ function InitItemsToFind()
     table.insert(ItemsToFind.ItemList, newItemToFind) 
   end
   ------------------------------------------------------------------------
-  ItemsToFind.ModifyGUI = function()
+  ItemsToFind.ModifyCallback = function()
     ItemsToFind.SelectionChanged = GameCallback_GUI_SelectionChanged
     GameCallback_GUI_SelectionChanged = function()
       ItemsToFind.SelectionChanged()
@@ -116,11 +113,11 @@ function InitItemsToFind()
     for i = table.getn(ItemsToFind.ItemList), 1, -1	do 
       local x, y = Camera.ScrollGetLookAt()
       local camPos = {X = x, Y = y}
-      local Condition1 = GetDistance(HeroInventory.ActiveHero, ItemsToFind.ItemList[i].Position) < 400
-      local Condition2 = GetDistance(camPos, ItemsToFind.ItemList[i].Position) < 1000
-      if Condition1 and Condition2 then
-        ItemsToFind.Show(i)
-        return
+      if GetDistance(HeroInventory.ActiveHero, ItemsToFind.ItemList[i].Position) < 400 then
+        if GetDistance(camPos, ItemsToFind.ItemList[i].Position) < 2000 then
+          ItemsToFind.Show(i)
+          return
+        end
       end
     end
     ItemsToFind.Hide()
@@ -158,5 +155,18 @@ function InitItemsToFind()
       Message("Ihr habt keinen Dietrich!")
     end
   end
-  ItemsToFind.ModifyGUI()
+  ------------------------------------------------------------------------
+  ItemsToFind.Update = function()
+    local itemToFind = ItemsToFind.ItemList[ItemsToFind.ActiveItem]
+    if itemToFind then
+      local xScreen, yScreen = GUI.GetScreenSize()
+      local itemToFindPos = itemToFind.Position
+      local x, y = Camera.GetScreenCoord(itemToFindPos.X, itemToFindPos.Y, itemToFindPos.Z)
+      
+      XGUIEng.SetWidgetPosition("ItemsToFind", x / xScreen * 1024 - 125, y / yScreen * 768 + 10);
+    end
+  end
+  ------------------------------------------------------------------------
+  ItemsToFind.ModifyCallback()
 end
+
