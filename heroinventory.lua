@@ -44,7 +44,7 @@ EquipItemSlots = {
   [2] = { Name = "Rechter Ringfinger", Button = "Inventory_EquipButton_RingRight" },
   [3] = { Name = "Linker Ringfinger", Button = "Inventory_EquipButton_RingLeft" },
   [4] = { Name = "Taille", Button = "Inventory_EquipButton_Belt" },
-  [5] = { Name = "Füße", Button = "Inventory_EquipButton_Feet" },
+  [5] = { Name = "FÃ¼ÃŸe", Button = "Inventory_EquipButton_Feet" },
   [6] = { Name = "Brust", Button = "Inventory_EquipButton_Breast" },
   [7] = { Name = "Rechte Hand", Button = "Inventory_EquipButton_RightHand" },
   [8] = { Name = "Linke Hand", Button = "Inventory_EquipButton_LeftHand" },
@@ -304,7 +304,7 @@ function HeroInventory.InitGUIModifications()
     if (a == "MenuCommandsGeneric/expel") then
       if HeroInventory.Heroes[eName] then
 				XGUIEng.SetText( gvGUI_WidgetID.TooltipBottomCosts, "" )
-				XGUIEng.SetText( gvGUI_WidgetID.TooltipBottomText, Umlaute("@color:176,176,176 Inventar @cr @color:255,255,255 Dieser Schalter öffnet das Inventar des Helden!"))
+				XGUIEng.SetText( gvGUI_WidgetID.TooltipBottomText, "@color:176,176,176 Inventar @cr @color:255,255,255 Dieser Schalter Ã¶ffnet das Inventar des Helden!")
 				XGUIEng.SetText( gvGUI_WidgetID.TooltipBottomShortCut, "Taste: [I]")
 			end
 		else
@@ -760,14 +760,14 @@ end
 -- Tooltips
 --------------------------------------------------------------------
 function GUITooltip_Inventory_EquipmentTooltip(_equipedItemNr)
-  XGUIEng.SetText("Inventory_EquipmentTooltip_Type", "@center " .. Umlaute(EquipItemSlots[_equipedItemNr].Name))
+  XGUIEng.SetText("Inventory_EquipmentTooltip_Type", "@center " .. EquipItemSlots[_equipedItemNr].Name)
   local equipedItems = HeroInventory.Heroes[HeroInventory.ActiveHero].EquipedItems
   if equipedItems[_equipedItemNr] then
     local item = equipedItems[_equipedItemNr]
-    XGUIEng.SetText("Inventory_EquipmentTooltip_Name", item.NameColor .. " @center " .. Umlaute(item.Name))
-    XGUIEng.SetText("Inventory_EquipmentTooltip_InfoTooltip_Type", "@center " .. Umlaute(HeroInventory.GetTypeString(item)))
-    XGUIEng.SetText("Inventory_EquipmentTooltip_InfoTooltip_Info", Umlaute(item.InfoText))
-    XGUIEng.SetText("Inventory_EquipmentTooltip_InfoTooltip_Name", item.NameColor .. " @center " .. Umlaute(item.Name))
+    XGUIEng.SetText("Inventory_EquipmentTooltip_Name", item.NameColor .. " @center " .. item.Name)
+    XGUIEng.SetText("Inventory_EquipmentTooltip_InfoTooltip_Type", "@center " .. HeroInventory.GetTypeString(item))
+    XGUIEng.SetText("Inventory_EquipmentTooltip_InfoTooltip_Info", item.InfoText)
+    XGUIEng.SetText("Inventory_EquipmentTooltip_InfoTooltip_Name", item.NameColor .. " @center " .. item.Name)
     XGUIEng.SetText("Inventory_EquipmentTooltip_InfoTooltip_Amount", "")
   else
     XGUIEng.SetText("Inventory_EquipmentTooltip_Name", "@center -")
@@ -779,7 +779,7 @@ function GUITooltip_Inventory_EquipmentTooltip(_equipedItemNr)
 end
 
 function GUITooltip_Inventory_Items_InfoTooltip(_btnNr)
-  HeroInventory.TradeState = Umlaute("Erlös")
+  HeroInventory.TradeState = "ErlÃ¶s"
   HeroInventory.SetInventoryInfoTooltipValues(_btnNr, HeroInventory.ActiveHero)
 end
 
@@ -796,9 +796,9 @@ function HeroInventory.SetInventoryInfoTooltipValues(_btnNr, _heroName)
   local itemProperties = HeroInventory.GetItemToInventoryButton(_btnNr, _heroName)
   if itemProperties then
     local item = itemProperties.Item
-    XGUIEng.SetText("Inventory_Items_InfoTooltip_Type", "@center " .. Umlaute(HeroInventory.GetTypeString(item)))
-    XGUIEng.SetText("Inventory_Items_InfoTooltip_Info", Umlaute(item.InfoText))
-    XGUIEng.SetText("Inventory_Items_InfoTooltip_Name", item.NameColor .. " @center " .. Umlaute(item.Name))
+    XGUIEng.SetText("Inventory_Items_InfoTooltip_Type", "@center " .. HeroInventory.GetTypeString(item))
+    XGUIEng.SetText("Inventory_Items_InfoTooltip_Info", item.InfoText)
+    XGUIEng.SetText("Inventory_Items_InfoTooltip_Name", item.NameColor .. " @center " .. item.Name)
     XGUIEng.SetText("Inventory_Items_InfoTooltip_Amount", "@center " .. itemProperties.Amount .."x")
     if HeroInventory.TradeModeActive then
       if item.Costs then
@@ -827,7 +827,7 @@ function HeroInventory.SetInventoryInfoTooltipValues(_btnNr, _heroName)
         end
         XGUIEng.SetText("Inventory_CostsTooltip_TradeState", "@center " .. HeroInventory.TradeState)
       else
-        XGUIEng.SetText("Inventory_CostsTooltip_TradeState", "@color:150,0,0 @center " .. Umlaute("Unverkäuflich!"))
+        XGUIEng.SetText("Inventory_CostsTooltip_TradeState", "@color:150,0,0 @center " .. "UnverkÃ¤uflich!")
         HeroInventory.ResetCostWidgets()
       end
     end
@@ -852,9 +852,9 @@ function GUITooltip_QuickAccessBar_InfoTooltip(_quickAccessSlot)
   local quickAccessItems = HeroInventory.Heroes[HeroInventory.ActiveHero].QuickAccessItems
   if quickAccessItems[_quickAccessSlot] then
     local item = quickAccessItems[_quickAccessSlot].Item
-    XGUIEng.SetText("Inventory_Items_InfoTooltip_Type", "@center " .. Umlaute(HeroInventory.GetTypeString(item)))
-    XGUIEng.SetText("Inventory_Items_InfoTooltip_Info", Umlaute(item.InfoText))
-    XGUIEng.SetText("Inventory_Items_InfoTooltip_Name", item.NameColor .. " @center " .. Umlaute(item.Name))
+    XGUIEng.SetText("Inventory_Items_InfoTooltip_Type", "@center " .. HeroInventory.GetTypeString(item))
+    XGUIEng.SetText("Inventory_Items_InfoTooltip_Info", item.InfoText)
+    XGUIEng.SetText("Inventory_Items_InfoTooltip_Name", item.NameColor .. " @center " .. item.Name)
   else
     XGUIEng.SetText("Inventory_Items_InfoTooltip_Type", "")
     XGUIEng.SetText("Inventory_Items_InfoTooltip_Info", "")
@@ -873,25 +873,25 @@ function GUITooltip_InventoryTooltip(_mode)
       nearestHero = "-"
     end
     title = "Tausch Modus"
-    text = "Tauscht Items mit einem Held in der Nähe @cr Nächster Held: " .. nearestHero
+    text = "Tauscht Items mit einem Held in der NÃ¤he @cr NÃ¤chster Held: " .. nearestHero
   elseif _mode == 2 then
     title = "Handels Modus"
-    text = "Wechselt in den Handelsmodus mit dem zuvor angesprochenen Händler"
+    text = "Wechselt in den Handelsmodus mit dem zuvor angesprochenen HÃ¤ndler"
   elseif _mode == 3 then
     title = "Inventar Modus"
     text = "Wechselt in das eigene Inventar eures Helden."
   end
-  XGUIEng.SetText("Inventory_Tooltip_Title", "@center " .. Umlaute(title))
-  XGUIEng.SetText("Inventory_Tooltip_Text", Umlaute(text) )
+  XGUIEng.SetText("Inventory_Tooltip_Title", "@center " .. title)
+  XGUIEng.SetText("Inventory_Tooltip_Text", text)
 end
 
 function GUITooltip_OtherInventory_HeroName()
   XGUIEng.SetText("Inventory_EquipmentTooltip_Type", "@center " .. "Inventar von")
-  local name = "Händler"
+  local name = "HÃ¤ndler"
   if HeroInventory.Heroes[HeroInventory.NearestHero] then
     name = HeroInventory.Heroes[HeroInventory.NearestHero].DisplayName
   end
-  XGUIEng.SetText("Inventory_EquipmentTooltip_Name", " @center " .. Umlaute(name))
+  XGUIEng.SetText("Inventory_EquipmentTooltip_Name", " @center " .. name)
   XGUIEng.SetText("Inventory_EquipmentTooltip_InfoTooltip_Type", "")
   XGUIEng.SetText("Inventory_EquipmentTooltip_InfoTooltip_Info", "")
   XGUIEng.SetText("Inventory_EquipmentTooltip_InfoTooltip_Name", "")
@@ -1183,7 +1183,7 @@ function HeroInventory.GetTypeString(_item)
     table.insert(textTable, "questitem")
   end
   if _item.Equipable then
-    table.insert(textTable, "ausrüstbar")
+    table.insert(textTable, "ausrÃ¼stbar")
   end
   if _item.Useable then
     if _item.Consumeable then
