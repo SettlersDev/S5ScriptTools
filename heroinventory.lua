@@ -569,7 +569,7 @@ function QuickAccessBar_ItemButtonClicked(_btnNr)
         Inventory_ItemButtonClicked(index - heroInv.ScrollValue)
       end
     else
-      HeroInventory.UseItem(_hero, _btnNr)
+      HeroInventory.UseItem(hero, _btnNr)
     end
   end
 end
