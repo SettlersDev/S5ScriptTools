@@ -29,7 +29,7 @@ LocalMusic.OwnSongs = {
   ["nyancat.mp3"] = 3*60 + 36
 }
 function InitOwnMusic(_path, _musicset)
-
+  LocalMusic.BriefingActive = false
   LocalMusic.OwnSetPath = _path
   EpicMusic = {
     ownSet = true,
@@ -83,6 +83,10 @@ function LocalMusic_UpdateMusic()
 		Stream.Stop()
 		return
 	end
+	if not ((IsBriefingActive ~= nil and IsBriefingActive() == true ) or (IsCutsceneActive~= nil and IsCutsceneActive() == true)) and LocalMusic.BriefingActive then
+		LocalMusic.SongLength = 0
+		LocalMusic.BriefingActive = false
+	end
 	if LocalMusic.BattlesOnTheMap == 0 then
 		if  LocalMusic.SongLength  > Logic.GetTime() then	 
 			return
@@ -105,9 +109,10 @@ function LocalMusic_UpdateMusic()
 		elseif LocalMusic.BattlesOnTheMap == 0 then
 			SetToUse = LocalMusic.UseSet[Weather]
 		end
-		if (IsBriefingActive ~= nil and IsBriefingActive() == true ) or (IsCutsceneActive~= nil and IsCutsceneActive() == true)then
+		if (IsBriefingActive ~= nil and IsBriefingActive() == true ) or (IsCutsceneActive~= nil and IsCutsceneActive() == true) then
 			SetToUse = LocalMusic.SetBriefing
 			UseStream = false
+			LocalMusic.BriefingActive = true
 		end
 		local SongAmount = table.getn(SetToUse)
 		local Random = 1 + XGUIEng.GetRandom(SongAmount-1)
