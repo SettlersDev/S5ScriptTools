@@ -116,9 +116,11 @@ function LocalMusic_UpdateMusic()
 		if UseStream then
 			SongToPlay = LocalMusic.OwnSetPath .. SetToUse[Random][1]
 			Stream.Start(SongToPlay, 127)
+			Music.Stop()
 		else
 			SongToPlay = path .. SetToUse[Random][1]
 			Sound.StartMusic(SongToPlay, 127)
+			Stream.Stop()
 		end
 		LocalMusic.SongLength =  Logic.GetTime() + SetToUse[Random][2] + 2
 	else
