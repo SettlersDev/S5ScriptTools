@@ -159,8 +159,6 @@ function SetupDayCycle(_sunRiseAngle, _sunSetAngle, _dayLength)
   Weather.DayLength = _dayLength * 10
   Weather.NightLength = Weather.NightAngleDif * Weather.DayLength / math.abs(Weather.DayAngleDif)
   Weather.SunStepPerTick = Weather.DayAngleDif / Weather.DayLength
-  Message(Weather.DayLength)
-  Message(Weather.NightLength)
   Weather.Time = 0
   Weather.SunAngle = Weather.SunRiseAngle
   Weather.SpeedUpTimeStep = (Weather.DayLength + Weather.NightLength) / 400
@@ -253,17 +251,16 @@ function Weather.UpdateDay()
   local intensity = 0
   if Weather.Time <= Weather.DayLength then
     intensity = 1 + math.sin(Weather.Time * math.pi / Weather.DayLength)
-    Weather.LightZ = math.abs((intensity - 1) * 200)
+    Weather.LightZ = -math.abs((intensity - 1) * 200) - 50
   elseif Weather.Time <= Weather.DayLength + Weather.NightLength then
     intensity = 1 + -math.sin((Weather.Time - Weather.DayLength) * math.pi / Weather.NightLength)
-    Weather.LightZ = math.abs((1 - intensity) * 500)
+    Weather.LightZ = -math.abs((1 - intensity) * 500) - 50
   else
     intensity = 1
     Weather.Time = 0
   end
-  
   local light = Weather.GfxSets[Weather.CurrentGfxSet].Light
-  local ambientLight = { R = intensity / 12 * light.Ambient.R + 5 / 6 * light.Ambient.R  , G = intensity / 12 * light.Ambient.G + 5 / 6 * light.Ambient.G, B = intensity / 12 * light.Ambient.B + 5 / 6 * light.Ambient.B}
+  local ambientLight = { R = intensity / 6 * light.Ambient.R + 4 / 6 * light.Ambient.R  , G = intensity / 6 * light.Ambient.G + 4 / 6 * light.Ambient.G, B = intensity / 6 * light.Ambient.B + 4 / 6 * light.Ambient.B}
   local diffuseLight = { R = intensity / 2 * light.Diffuse.R, G = intensity / 2 * light.Diffuse.G, B = intensity / 2 * light.Diffuse.B}
   
   Display.GfxSetSetLightParams(Weather.CurrentGfxSet, light.TransitionStart, light.TransitionEnd, Weather.LightX, Weather.LightY, Weather.LightZ, ambientLight.R, ambientLight.G, ambientLight.B, diffuseLight.R, diffuseLight.G, diffuseLight.B)
