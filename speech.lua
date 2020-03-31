@@ -7,7 +7,7 @@
     timer.lua
     cinematic.lua
 ]]--
-function SetupSpeech()
+function SetupSpeech(_voicePath)
 	
 	npcSpeech = {}
 	speech_convToAdd = {}
@@ -15,6 +15,7 @@ function SetupSpeech()
 	SPEECH_ROTATION = -45
 	SPEECH_ZOOM = 1000
 	SPEECH_ANGLE = 45
+	SPEECH_VOICE_PATH = _voicePath
 
 	XGUIEng.ShowWidget("CinematicMC_Headline", 0)
 	XGUIEng.ShowWidget("CinematicMC_Text", 0)
@@ -73,7 +74,7 @@ function SetupSpeech()
 	InitSpeechIfNear()
 end
 
-function Speech_ASP(_title, _text, _pos, _rot, _angle, _zoom, _action, _mc, _nextPageTime)
+function Speech_ASP(_title, _text, _pos, _voice, _rot, _angle, _zoom, _action, _mc, _nextPageTime)
 	return { 
 		title = _title,
 		text = _text,
@@ -83,7 +84,8 @@ function Speech_ASP(_title, _text, _pos, _rot, _angle, _zoom, _action, _mc, _nex
 		zoom = _zoom,
 		action = _action,
 		mc = _mc,
-		nextPageTime = _nextPageTime
+		nextPageTime = _nextPageTime,
+		voice = _voice
 	}
 end
 
@@ -169,7 +171,7 @@ end
 
 function Speech_Continue()
   if (not speech_Conv[speech_curPage].mc) then
-    if (not speech_Conv[speech_curPage].nextPageTime) then
+    if (not speech_Conv[speech_curPage].nextPageTime) and (not speech_Conv[speech_curPage].voice) then
       Speech_NextPage()
     end
     return true
@@ -295,7 +297,11 @@ function Speech_NextPage()
       end
     end
 		Speech_SetupPage()
-    if speech_Conv[speech_curPage].nextPageTime then
+		if speech_Conv[speech_curPage].voice then
+			Stream.Start(SPEECH_VOICE_PATH .. speech_Conv[speech_curPage].voice, 127)
+      XGUIEng.ShowWidget("CinematicMC_Text", 0)
+			RegisterTimer(math.ceil(Stream.GetDuration() + 1), function() Speech_NextPage(); end)
+    elseif speech_Conv[speech_curPage].nextPageTime then
       XGUIEng.ShowWidget("CinematicMC_Text", 0)
       RegisterTimer(speech_Conv[speech_curPage].nextPageTime, function() Speech_NextPage(); end)
     end

@@ -27,6 +27,7 @@ function InitOwnMusic(_path, _musicset)
   else
     LocalMusic.UseSet = EUROPEMUSIC
   end
+  LocalMusic.SongLength = 0
 end
 
 function LocalMusic_UpdateMusic()
@@ -74,7 +75,7 @@ function LocalMusic_UpdateMusic()
 			path = LocalMusic.OwnSetPath
 		end
 		SongToPlay = path .. SetToUse[Random][1]
-		Sound.StartMusic(SongToPlay, 127)
+		Music.Start(SongToPlay, 127)
 		LocalMusic.SongLength =  Logic.GetTime() + SetToUse[Random][2] + 2
 	else
 		local SongToPlay
@@ -83,7 +84,7 @@ function LocalMusic_UpdateMusic()
 			path = LocalMusic.OwnPath
 		end
 		SongToPlay = path .. LocalMusic.OwnSong
-		Sound.StartMusic(SongToPlay, 127)
+		Music.Start(SongToPlay, 127)
 		LocalMusic.SongLength =  Logic.GetTime() + LocalMusic.OwnSongs[LocalMusic.OwnSong] + 2
 	end
 	LocalMusic.BattlesOnTheMap = 0

@@ -70,7 +70,7 @@ function RestoreBriefWindow()
 	
 end
 
-function StoryWindow(_text, _noCinematicBars)
+function StoryWindow(_text, _noCinematicBars, _fixedTitle)
 	assert(type(_text) == "table", "CinematicTitle: text is no table")
 	XGUIEng.ShowWidget("Cinematic", 1)
 	XGUIEng.ShowWidget("CinematicMC_Text", 0)
@@ -90,6 +90,11 @@ function StoryWindow(_text, _noCinematicBars)
 	title_text = _text
 	title_dir = 1
 	title_txtCnt = 1
+	title_fixedTitle = _fixedTitle
+	if title_text[title_txtCnt].voice then
+		Stream.Start(Global.Paths.Voice .. title_text[title_txtCnt].voice, 127)
+		title_text[title_txtCnt].delay = Stream.GetDuration() * 10 - 10
+	end
 	StartSimpleHiResJob("TitleControl")
 end
 
@@ -103,11 +108,20 @@ function TitleControl()
 		return false
 	end
 	title_showCnt = title_showCnt + step
-	XGUIEng.SetText("Cinematic_Headline", Umlaute(" @color:255,255,255,"..title_showCnt.." @center "..title_text[title_txtCnt].title or " "))
+	if title_fixedTitle then
+		local gamma = title_showCnt
+		if title_txtCnt > 1 and title_txtCnt < table.getn(title_text)
+				or title_txtCnt <= 1 and title_dir == -1 
+				or title_txtCnt >= table.getn(title_text) and title_dir == 1 then
+			gamma = 255
+		end		
+		XGUIEng.SetText("Cinematic_Headline", Umlaute(" @color:255,255,255,"..gamma.." @center " .. title_fixedTitle))
+	else
+		XGUIEng.SetText("Cinematic_Headline", Umlaute(" @color:255,255,255,"..title_showCnt.." @center "..title_text[title_txtCnt].title or " "))
+	end
 	XGUIEng.SetText("Cinematic_Text", Umlaute(" @color:255,255,255,"..title_showCnt.." "..title_text[title_txtCnt].text or " "))
 	if title_showCnt == 255 then
 		title_dir = -1
-		title_firstTime = false
 	end
 	if title_showCnt == 0 then
 		title_txtCnt = title_txtCnt + 1
@@ -119,6 +133,9 @@ function TitleControl()
         title_text.finished()
       end
 			return true
+		elseif title_text[title_txtCnt].voice then
+			Stream.Start(Global.Paths.Voice .. title_text[title_txtCnt].voice, 127)
+			title_text[title_txtCnt].delay = Stream.GetDuration() * 10 - 10
 		end
 	end
 end
